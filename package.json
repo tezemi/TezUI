@@ -1,0 +1,16 @@
+{
+  "name": "com.tezemi.tezui",
+  "displayName": "TezUI",
+  "version": "0.1.0",
+  "unity": "2020.3",
+  "description": "Lightweight and easy-to-use library for creating different UI effects.",
+  "type": "library",
+  "keywords": [
+    "UI",
+	"Utilities"
+  ],
+  "author": {
+    "name": "Mattias Edlund",
+    "url": "https://github.com/Whinarn"
+  }
+}

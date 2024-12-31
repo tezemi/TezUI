@@ -1,7 +1,7 @@
 {
   "name": "com.tezemi.tezui",
   "displayName": "TezUI",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "unity": "2020.3",
   "description": "Lightweight and easy-to-use library for creating different UI effects.",
   "type": "library",

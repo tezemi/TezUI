@@ -87,7 +87,42 @@ public class FadeTests
 		Assert.AreEqual(_testGraphic.color.a, initialAlpha);
     }
 
-    [TearDown]
+	[UnityTest]
+    public IEnumerator GlowCancelEarlyTest()
+    {
+	    const float initialAlpha = 1f;
+	    const float destinationAlpha = 0.5f;
+
+	    _testGraphic.color = Color.white;
+	    _testGraphic.Glow(3f, destinationAlpha);
+
+	    yield return new WaitForSeconds(1f);
+
+		_testGraphic.StopGlowing();
+
+		yield return new WaitForEndOfFrame();
+
+		Assert.AreEqual(_testGraphic.color.a, initialAlpha);
+    }
+
+	[UnityTest]
+    public IEnumerator GlowIsGlowingTest()
+    {
+	    _testGraphic.color = Color.white;
+	    _testGraphic.Glow(5f, 0.5f);
+
+	    yield return new WaitForSeconds(1f);
+
+		Assert.IsTrue(_testGraphic.IsGlowing());
+
+		_testGraphic.StopGlowing();
+
+		yield return new WaitForEndOfFrame();
+
+		Assert.IsFalse(_testGraphic.IsGlowing());
+	}
+
+	[TearDown]
     public void TearDownGraphic()
     {
         Object.Destroy(_testGraphic.gameObject);

@@ -136,9 +136,19 @@ namespace TezUI
 	        }
             
 	        _glowingGraphics.Remove(graphic);
-	        graphic.StopCoroutine(nameof(GlowCoroutine));
+            GraphicManager.Remove(graphic, EffectType.SetColor);
 	        graphic.color = graphic.color.RGB(1f);
 		}
+
+        /// <summary>
+        /// Returns whether or not a graphic is glowing.
+        /// </summary>
+        /// <param name="graphic">The graphic to check.</param>
+        /// <returns>True if the graphic is glowing.</returns>
+        public static bool IsGlowing(this Graphic graphic)
+        {
+            return _glowingGraphics.Contains(graphic);
+        }
 
         private static IEnumerator FadeCoroutine(Graphic graphic, Color color, float time)
         {

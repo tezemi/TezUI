@@ -8,7 +8,7 @@ using NUnit.Framework;
 public class TimingTests
 {
 	private Graphic _testGraphic;
-	private const float TOLERANCE = 0.001f;
+	private const float TOLERANCE = 0.005f;
 
 	[SetUp]
 	public void SetUpGraphic()

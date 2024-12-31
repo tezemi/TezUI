@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,6 +10,8 @@ namespace TezUI
     /// </summary>
     public static class FadeExtensions
     {
+        private static readonly HashSet<Graphic> _glowingGraphics = new HashSet<Graphic>();
+
         /// <summary>
         /// Fade's a graphic's alpha in over the specified amount of time.
         /// </summary>
@@ -86,6 +89,57 @@ namespace TezUI
             return new WaitForFade(graphic, color);
         }
 
+        /// <summary>
+        /// Causes the graphic to start fading in and out using the specified
+        /// alpha. Use <see cref="StopGlowing"/> on the graphic end the effect.
+        /// </summary>
+        /// <param name="graphic">The graphic which will start glowing.</param>
+        /// <param name="time">The time it takes for the graphic to fade.</param>
+        /// <param name="alpha">The destination alpha, which should lower than
+        /// the input.</param>
+        public static void Glow(this Graphic graphic, float time, float alpha)
+        {
+	        if (!graphic.isActiveAndEnabled)
+	        {
+		        Debug.LogWarning($"Can't run method {nameof(Glow)} on {graphic.name}, it is disabled.", graphic);
+
+		        return;
+	        }
+
+	        if (_glowingGraphics.Contains(graphic))
+	        {
+		        Debug.LogWarning($"Can't run {nameof(Glow)} on {graphic.name}, it is already glowing.", graphic);
+
+		        return;
+			}
+
+	        _glowingGraphics.Add(graphic);
+
+			var initialColor = graphic.color;
+	        var destinationColor = graphic.color.RGB(alpha);
+
+	        var coroutine = graphic.StartCoroutine(GlowCoroutine(graphic, initialColor, destinationColor, time));
+	        GraphicManager.Add(graphic, EffectType.SetColor, coroutine);
+        }
+
+        /// <summary>
+        /// If a graphic is glowing using <see cref="Glow"/>, this will stop the effect.
+        /// </summary>
+        /// <param name="graphic">The graphic to stop glowing.</param>
+        public static void StopGlowing(this Graphic graphic)
+        {
+	        if (!_glowingGraphics.Contains(graphic))
+	        {
+		        Debug.LogWarning($"Can't run {nameof(StopGlowing)} on {graphic.name}, it is not glowing.", graphic);
+
+		        return;
+	        }
+            
+	        _glowingGraphics.Remove(graphic);
+	        graphic.StopCoroutine(nameof(GlowCoroutine));
+	        graphic.color = graphic.color.RGB(1f);
+		}
+
         private static IEnumerator FadeCoroutine(Graphic graphic, Color color, float time)
         {
             while (graphic.color != color)
@@ -98,6 +152,30 @@ namespace TezUI
             yield return new WaitForEndOfFrame();
 
             GraphicManager.Remove(graphic, EffectType.SetColor);
+        }
+
+        private static IEnumerator GlowCoroutine(Graphic graphic, Color initialColor, Color destinationColor, float time)
+        {
+	        while (_glowingGraphics.Contains(graphic))
+	        {
+				while (graphic.color != destinationColor)
+				{
+					yield return new WaitForEndOfFrame();
+
+					graphic.color = Vector4.MoveTowards(graphic.color, destinationColor, Utils.GetDistanceFromTime(time));
+				}
+
+				yield return new WaitForEndOfFrame();
+
+				while (graphic.color != initialColor)
+				{
+					yield return new WaitForEndOfFrame();
+
+					graphic.color = Vector4.MoveTowards(graphic.color, initialColor, Utils.GetDistanceFromTime(time));
+				}
+
+				yield return new WaitForEndOfFrame();
+			}
         }
     }
 }

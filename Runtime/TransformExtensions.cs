@@ -19,6 +19,13 @@ namespace TezUI
         /// <returns>Waits until the graphic is at the new position.</returns>
         public static WaitForPosition SetPosition(this Graphic graphic, Vector2 position, float time)
         {
+            if (!graphic.isActiveAndEnabled)
+            {
+                Debug.LogWarning($"Can't run method {nameof(SetPosition)} on {graphic.name}, it is disabled.", graphic);
+
+                return null;
+            }
+            
             var coroutine = graphic.StartCoroutine(SetPositionCoroutine());
 
             GraphicManager.Add(graphic, EffectType.SetColor, coroutine);
@@ -49,6 +56,13 @@ namespace TezUI
         /// <returns>Waits until the new scale is reached.</returns>
         public static WaitForScale SetScale(this Graphic graphic, Vector3 scale, float time)
         {
+            if (!graphic.isActiveAndEnabled)
+            {
+                Debug.LogWarning($"Can't run method {nameof(SetScale)} on {graphic.name}, it is disabled.", graphic);
+
+                return null;
+            }
+            
             var coroutine = graphic.StartCoroutine(SetScaleCoroutine());
 
             GraphicManager.Add(graphic, EffectType.SetScale, coroutine);

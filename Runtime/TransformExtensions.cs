@@ -63,7 +63,7 @@ namespace TezUI
                 return null;
             }
             
-            var coroutine = graphic.StartCoroutine(SetScaleCoroutine());
+            Coroutine coroutine = graphic.StartCoroutine(SetScaleCoroutine());
 
             GraphicManager.Add(graphic, EffectType.SetScale, coroutine);
 
@@ -80,6 +80,8 @@ namespace TezUI
                     graphic.rectTransform.localScale = Vector3.MoveTowards(graphic.rectTransform.localScale, scale, Utils.GetDistanceFromTime(time, distance));
                 }
 
+                yield return new WaitForEndOfFrame();
+                
                 GraphicManager.Remove(graphic, EffectType.SetScale);
             }
         }

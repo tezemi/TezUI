@@ -7,7 +7,7 @@ namespace TezUI
     {
         public Graphic Graphic { get; }
         public Vector3 DestinationVector { get; }
-        public override bool keepWaiting => Graphic.transform.localScale != DestinationVector && GraphicManager.IsRunning(Graphic, EffectType.SetPosition);
+        public override bool keepWaiting => Graphic.transform.localScale != DestinationVector || GraphicManager.IsRunning(Graphic, EffectType.SetScale);
 
         public WaitForScale(Graphic graphic, Vector3 destinationVector)
         {
